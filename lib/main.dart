@@ -30,6 +30,27 @@ class _ConverterPageState extends State<ConverterPage> {
   bool isConverted = false;
 
   void convertTemperature() {
+    if (inputTemperature == 0.0) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text("Please enter a valid temperature."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     if (selectedInput == 'Celsius') {
       outputTemperature = (inputTemperature * 9 / 5) + 32; // Celsius to Fahrenheit
     } else if (selectedInput == 'Fahrenheit') {
