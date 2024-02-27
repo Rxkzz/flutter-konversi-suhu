@@ -27,6 +27,7 @@ class _ConverterPageState extends State<ConverterPage> {
   String selectedInput = 'Celsius';
   double inputTemperature = 0.0;
   double outputTemperature = 0.0;
+  bool isConverted = false;
 
   void convertTemperature() {
     if (selectedInput == 'Celsius') {
@@ -38,6 +39,9 @@ class _ConverterPageState extends State<ConverterPage> {
     } else if (selectedInput == 'Kelvin') {
       outputTemperature = inputTemperature - 273.15; // Kelvin to Celsius
     }
+    setState(() {
+      isConverted = true;
+    });
   }
 
   @override
@@ -60,7 +64,7 @@ class _ConverterPageState extends State<ConverterPage> {
               onChanged: (newValue) {
                 setState(() {
                   selectedInput = newValue!;
-                  convertTemperature();
+                  isConverted = false; // Reset isConverted when input is changed
                 });
               },
               items: <String>[
@@ -86,7 +90,7 @@ class _ConverterPageState extends State<ConverterPage> {
               onChanged: (value) {
                 setState(() {
                   inputTemperature = double.tryParse(value) ?? 0.0;
-                  convertTemperature();
+                  isConverted = false; // Reset isConverted when input is changed
                 });
               },
               decoration: InputDecoration(
@@ -95,16 +99,29 @@ class _ConverterPageState extends State<ConverterPage> {
               ),
             ),
             SizedBox(height: 16.0),
-            Text(
-              'Output Temperature:',
-              style: TextStyle(fontSize: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                convertTemperature();
+              },
+              child: Text('Convert'),
             ),
-            Text(
-              'Fahrenheit: ${(selectedInput == 'Celsius') ? outputTemperature : (selectedInput == 'Fahrenheit') ? inputTemperature : (selectedInput == 'Reamur') ? outputTemperature * 9 / 5 + 32 : outputTemperature + 273.15}\n'
-              'Reamur: ${(selectedInput == 'Celsius') ? outputTemperature * 4 / 5 : (selectedInput == 'Fahrenheit') ? (inputTemperature - 32) * 4 / 9 : outputTemperature * 4 / 5}\n'
-              'Kelvin: ${(selectedInput == 'Celsius') ? outputTemperature + 273.15 : (selectedInput == 'Fahrenheit') ? (inputTemperature - 32) * 5 / 9 + 273.15 : outputTemperature}',
-              style: TextStyle(fontSize: 16.0),
-            ),
+            SizedBox(height: 16.0),
+            if (isConverted)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Output Temperature:',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  Text(
+                    'Fahrenheit: ${(selectedInput == 'Celsius') ? outputTemperature : (selectedInput == 'Fahrenheit') ? inputTemperature : (selectedInput == 'Reamur') ? outputTemperature * 9 / 5 + 32 : outputTemperature + 273.15}\n'
+                    'Reamur: ${(selectedInput == 'Celsius') ? outputTemperature * 4 / 5 : (selectedInput == 'Fahrenheit') ? (inputTemperature - 32) * 4 / 9 : outputTemperature * 4 / 5}\n'
+                    'Kelvin: ${(selectedInput == 'Celsius') ? outputTemperature + 273.15 : (selectedInput == 'Fahrenheit') ? (inputTemperature - 32) * 5 / 9 + 273.15 : outputTemperature}',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
