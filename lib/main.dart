@@ -24,23 +24,19 @@ class ConverterPage extends StatefulWidget {
 }
 
 class _ConverterPageState extends State<ConverterPage> {
-  String selectedConversion = 'Celcius to Reamur';
+  String selectedInput = 'Celsius';
   double inputTemperature = 0.0;
   double outputTemperature = 0.0;
 
   void convertTemperature() {
-    if (selectedConversion == 'Celcius to Reamur') {
-      outputTemperature = inputTemperature * 0.8;
-    } else if (selectedConversion == 'Reamur to Celcius') {
-      outputTemperature = inputTemperature / 0.8;
-    } else if (selectedConversion == 'Celcius to Kelvin') {
-      outputTemperature = inputTemperature + 273.15;
-    } else if (selectedConversion == 'Kelvin to Celcius') {
-      outputTemperature = inputTemperature - 273.15;
-    } else if (selectedConversion == 'Reamur to Kelvin') {
-      outputTemperature = (inputTemperature / 0.8) + 273.15;
-    } else if (selectedConversion == 'Kelvin to Reamur') {
-      outputTemperature = (inputTemperature - 273.15) * 0.8;
+    if (selectedInput == 'Celsius') {
+      outputTemperature = (inputTemperature * 9 / 5) + 32; // Celsius to Fahrenheit
+    } else if (selectedInput == 'Fahrenheit') {
+      outputTemperature = (inputTemperature - 32) * 5 / 9; // Fahrenheit to Celsius
+    } else if (selectedInput == 'Reamur') {
+      outputTemperature = inputTemperature * 5 / 4; // Reamur to Celsius
+    } else if (selectedInput == 'Kelvin') {
+      outputTemperature = inputTemperature - 273.15; // Kelvin to Celsius
     }
   }
 
@@ -55,21 +51,23 @@ class _ConverterPageState extends State<ConverterPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Text(
+              'Select Input:',
+              style: TextStyle(fontSize: 16.0),
+            ),
             DropdownButton<String>(
-              value: selectedConversion,
+              value: selectedInput,
               onChanged: (newValue) {
                 setState(() {
-                  selectedConversion = newValue!;
+                  selectedInput = newValue!;
                   convertTemperature();
                 });
               },
               items: <String>[
-                'Celcius to Reamur',
-                'Reamur to Celcius',
-                'Celcius to Kelvin',
-                'Kelvin to Celcius',
-                'Reamur to Kelvin',
-                'Kelvin to Reamur',
+                'Celsius',
+                'Fahrenheit',
+                'Reamur',
+                'Kelvin',
               ].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -102,7 +100,9 @@ class _ConverterPageState extends State<ConverterPage> {
               style: TextStyle(fontSize: 16.0),
             ),
             Text(
-              '$outputTemperature',
+              'Fahrenheit: ${(selectedInput == 'Celsius') ? outputTemperature : (selectedInput == 'Fahrenheit') ? inputTemperature : (selectedInput == 'Reamur') ? outputTemperature * 9 / 5 + 32 : outputTemperature + 273.15}\n'
+              'Reamur: ${(selectedInput == 'Celsius') ? outputTemperature * 4 / 5 : (selectedInput == 'Fahrenheit') ? (inputTemperature - 32) * 4 / 9 : outputTemperature * 4 / 5}\n'
+              'Kelvin: ${(selectedInput == 'Celsius') ? outputTemperature + 273.15 : (selectedInput == 'Fahrenheit') ? (inputTemperature - 32) * 5 / 9 + 273.15 : outputTemperature}',
               style: TextStyle(fontSize: 16.0),
             ),
           ],
